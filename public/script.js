@@ -13,11 +13,19 @@ let drawing = false;
 let lastX = 0;
 let lastY = 0;
 
+function getMousePos(canvas, evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
 
 canvas.addEventListener("mousedown", (e) => {
     drawing = true;
-    lastX = e.clientX;
-    lastY = e.clientY;
+    const pos = getMousePos(canvas, e);
+    lastX = pos.x;
+    lastY = pos.y;
 });
 
 canvas.addEventListener("mouseup", () => drawing = false);
@@ -26,11 +34,13 @@ canvas.addEventListener("mouseout", () => drawing = false);
 canvas.addEventListener("mousemove", (e) => {
     if (!drawing) return;
 
+    const pos = getMousePos(canvas, e);
+
     const data = {
         x0: lastX,
         y0: lastY,
-        x1: e.clientX,
-        y1: e.clientY,
+        x1: pos.x,
+        y1: pos.y,
         color: colorPicker.value,
         size: brushSize.value
     };
@@ -38,10 +48,9 @@ canvas.addEventListener("mousemove", (e) => {
     drawLine(data);          
     socket.emit("draw", data);
 
-    lastX = e.clientX;
-    lastY = e.clientY;
+    lastX = pos.x;
+    lastY = pos.y;
 });
-
 
 socket.on("draw", (data) => drawLine(data));
 
@@ -56,12 +65,10 @@ function drawLine(data) {
     ctx.stroke();
 }
 
-
 clearBtn.addEventListener("click", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     socket.emit("clear");
 });
-
 
 socket.on("clear", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
