@@ -6,6 +6,27 @@ body {
     background-color: #f0f0f0;
 }
 
+h2 {
+    margin-top: 10px;
+}
+
+.toolbar {
+    background: #333;
+    padding: 10px;
+}
+
+.toolbar button {
+    margin-right: 5px;
+    padding: 6px 10px;
+    border: none;
+    background: white;
+    cursor: pointer;
+}
+
+.toolbar button:hover {
+    background: lightgray;
+}
+
 canvas {
     border: 2px solid black;
     display: block;
